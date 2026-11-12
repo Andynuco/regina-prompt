@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea tu Prompt 4 - Generador de Copys Creativos</title>
+    <!-- Google Fonts: Poppins & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Animate.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --gradient-bg: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 25%, #6BCB77 50%, #4D96FF 75%, #9B5DE5 100%);
+            --card-bg: rgba(255, 255, 255, 0.94);
+            --primary-grad: linear-gradient(90deg, #FF512F 0%, #DD2476 100%);
+            --secondary-grad: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--gradient-bg);
+            background-size: 300% 300%;
+            animation: gradientFlow 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 1rem;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Decoraciones flotantes de fondo */
+        .floating-shape {
+            position: fixed;
+            z-index: 0;
+            opacity: 0.25;
+            pointer-events: none;
+            animation: floatAnim 6s ease-in-out infinite;
+        }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(8deg); }
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 28px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .header-banner {
+            background: linear-gradient(120deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255,107,107,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .title-highlight {
+            background: linear-gradient(90deg, #FFD93D, #FF6B6B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .form-select-custom {
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            padding: 0.85rem 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            background-color: #f8fafc;
+        }
+
+        .form-select-custom:focus {
+            border-color: #8E54E9;
+            box-shadow: 0 0 0 4px rgba(142, 84, 233, 0.18);
+            background-color: #ffffff;
+        }
+
+        .btn-generate {
+            background: var(--primary-grad);
+            border: none;
+            border-radius: 18px;
+            color: white;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 25px -5px rgba(221, 36, 118, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 15px 30px -5px rgba(221, 36, 118, 0.65);
+            color: white;
+        }
+
+        .btn-generate:active {
+            transform: translateY(1px);
+        }
+
+        /* Caja de resultado con borde arcoíris animado */
+        .result-wrapper {
+            position: relative;
+            border-radius: 22px;
+            padding: 3px;
+            background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77, #4D96FF, #9B5DE5, #FF6B6B);
+            background-size: 300% 300%;
+            animation: gradientFlow 6s linear infinite;
+            box-shadow: 0 12px 24px -8px rgba(77, 150, 255, 0.25);
+        }
+
+        .result-box {
+            background: #ffffff;
+            border-radius: 19px;
+            padding: 1.75rem;
+            min-height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .copy-text-display {
+            font-size: 1.2rem;
+            line-height: 1.65;
+            color: #1e293b;
+            font-weight: 600;
+            white-space: pre-line;
+        }
+
+        .hashtag-pill {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #4776E6;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            margin: 0.2rem;
+            border: 1px solid #cbd5e1;
+            transition: all 0.2s;
+        }
+
+        .hashtag-pill:hover {
+            background: #4776E6;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-copy {
+            background: var(--secondary-grad);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            padding: 0.6rem 1.25rem;
+            transition: all 0.25s ease;
+        }
+
+        .btn-copy:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-copy.copied {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .badge-category {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.4rem 0.85rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Estilo de selección rápida de red social */
+        .social-chip {
+            cursor: pointer;
+            border-radius: 12px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1.5px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .social-chip.active {
+            border-color: #8E54E9;
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Elementos decorativos de fondo -->
+    <div class="floating-shape" style="top: 8%; left: 6%; font-size: 4rem;">🚀</div>
+    <div class="floating-shape" style="bottom: 10%; right: 7%; font-size: 4.5rem; animation-delay: 2s;">✨</div>
+    <div class="floating-shape" style="top: 15%; right: 12%; font-size: 3.5rem; animation-delay: 4s;">💬</div>
+    <div class="floating-shape" style="bottom: 15%; left: 10%; font-size: 3.5rem; animation-delay: 1s;">🎯</div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div class="main-card animate__animated animate__fadeInUp">
+                    
+                    <!-- Encabezado -->
+                    <div class="header-banner text-center">
+                        <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-2 shadow-sm">
+                            <i class="bi bi-stars me-1"></i> Marketing Digital & Redes Sociales
+                        </span>
+                        <h1 class="display-6 fw-extrabold mb-1">
+                            Crea tu <span class="title-highlight">Prompt 4</span>
+                        </h1>
+                        <p class="mb-0 text-light opacity-75 fs-6">
+                            Generador de copys creativos para redes sociales al instante
+                        </p>
+                    </div>
+
+                    <!-- Cuerpo de la aplicación -->
+                    <div class="p-4 p-md-5">
+                        
+                        <!-- Selectores principales -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-sm-6">
+                                <label for="postType" class="form-label fw-bold text-secondary small text-uppercase">
+                                    <i class="bi bi-megaphone-fill text-danger me-1"></i> Tipo de publicación
+                                </label>
+                                <select id="postType" class="form-select form-select-custom">
+                                    <option value="promocion">🛍️ Promoción / Oferta</option>
+                                    <option value="inspiracion">✨ Inspiración / Motivación</option>
+                                    <option value="testimonial">⭐ Testimonial / Prueba Social</option>
+                                    <option value="cta">🎯 Llamado a la acción (CTA)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <label for="emotionType" class="form-label fw-bold text-secondary small text-uppercase">
+                                    <i class="bi bi-emoji-smile-fill text-warning me-1"></i> Emoción a transmitir
+                                </label>
+                                <select id="emotionType" class="form-select form-select-custom">
+                                    <option value="alegria">😄 Alegría y Entusiasmo</option>
+                                    <option value="urgencia">⚡ Urgencia y Escasez</option>
+                                    <option value="sorpresa">😲 Sorpresa y Asombro</option>
+                                    <option value="curiosidad">🤔 Curiosidad e Intriga</option>
+                                    <option value="empatia">🤝 Empatía y Cercanía</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Opciones extra: Red social e inclusión de Hashtags -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 pb-2 border-bottom">
+                            <div class="d-flex flex-wrap gap-2" id="networkSelector">
+                                <span class="social-chip active" data-net="Instagram"><i class="bi bi-instagram me-1"></i>Instagram</span>
+                                <span class="social-chip" data-net="TikTok"><i class="bi bi-tiktok me-1"></i>TikTok</span>
+                                <span class="social-chip" data-net="Facebook"><i class="bi bi-facebook me-1"></i>Facebook</span>
+                                <span class="social-chip" data-net="LinkedIn"><i class="bi bi-linkedin me-1"></i>LinkedIn</span>
+                            </div>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="includeHashtags" checked style="cursor: pointer;">
+                                <label class="form-check-label fw-semibold text-secondary small" for="includeHashtags" style="cursor: pointer;">
+                                    Incluir hashtags
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Botón principal de generación -->
+                        <div class="d-grid mb-4">
+                            <button id="generateBtn" class="btn btn-generate">
+                                <i class="bi bi-magic me-2"></i> GENERAR COPY CREATIVO
+                            </button>
+                        </div>
+
+                        <!-- Área de visualización del copy generado -->
+                        <div class="result-wrapper">
+                            <div class="result-box">
+                                <!-- Etiquetas informativas -->
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                    <div id="badgesContainer">
+                                        <span class="badge-category bg-primary-subtle text-primary">Listo para crear</span>
+                                    </div>
+                                    <span class="text-muted small fw-semibold" id="charCounter">0 caracteres</span>
+                                </div>
+
+                                <!-- Texto del Copy con animación -->
+                                <div id="copyOutputWrapper" class="my-2">
+                                    <p id="copyOutput" class="copy-text-display mb-2">
+                                        Selecciona el tipo de publicación, elige la emoción que deseas despertar en tu audiencia y presiona <strong>"Generar Copy Creativo"</strong>. 🚀✨
+                                    </p>
+                                    <div id="hashtagsContainer" class="mt-2"></div>
+                                </div>
+
+                                <!-- Barra inferior de acciones -->
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3 pt-3 border-top">
+                                    <button id="regenerateSmallBtn" class="btn btn-outline-secondary btn-sm rounded-pill fw-semibold px-3" title="Probar otra variación">
+                                        <i class="bi bi-arrow-repeat me-1"></i> Otra idea
+                                    </button>
+
+                                    <button id="copyBtn" class="btn btn-copy btn-sm d-flex align-items-center gap-2">
+                                        <i class="bi bi-clipboard-check" id="copyIcon"></i>
+                                        <span id="copyBtnText">Copiar Copy</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Pie de tarjeta -->
+                    <div class="bg-light px-4 py-3 text-center border-top">
+                        <small class="text-muted fw-semibold">
+                            Desarrollado con Bootstrap 5 & Animate.css • Ideal para Community Managers y Emprendedores 💡
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        /**
+         * Base de datos amplia de copys creativos organizados por:
+         * Tipo de publicación -> Emoción -> Arreglo de variaciones
+         */
+        const copyDatabase = {
+            promocion: {
+                alegria: [
+                    "🎉 ¡Hoy es el día perfecto para consentirte! Disfruta de un 25% DE DESCUENTO en toda nuestra colección y llena tu semana de buena vibra. ¡Te lo mereces! 🛍️✨",
+                    "🥳 ¡Celebremos juntos! Por tiempo especial, llévate tu favorito con envío GRATIS incluido. Haz clic en el enlace de nuestra bio y empieza a sonreír. 😍🎁",
+                    "🌈 ¡Dale color a tu rutina! Aprovecha nuestra promo especial 2x1 y comparte la felicidad con quien tú más quieras. ¡Corre antes de que vuelen! 💖🚀"
+                ],
+                urgencia: [
+                    "⚡ ¡ÚLTIMAS HORAS! El reloj sigue corriendo y nuestro 30% de descuento termina hoy a medianoche. No digas que no te avisamos... ¡Aprovecha AHORA! ⏳🔥",
+                    "🚨 ¡ALERTA DE STOCK! Quedan menos de 10 unidades disponibles con precio especial. Si lo estabas pensando, este es el momento exacto para hacerlo tuyo. 🏃‍♂️💨",
+                    "⏰ ¡Se acaba el tiempo! Solo por las próximas 4 horas llévate un regalo sorpresa en tu compra. ¡Haz clic ya antes de que se agote! 😱💥"
+                ],
+                sorpresa: [
+                    "🤯 ¡NO VAS A CREER LO QUE PREPARAMOS! Bajamos los precios como nunca antes en nuestros productos estrella. Descubre la sorpresa en nuestra tienda hoy mismo. 🎁✨",
+                    "👀 ¿Viste eso? ¡Acabamos de activar un cupón secreto por tiempo limitado! Usa el código SORPRESA20 al finalizar tu pedido y mira la magia suceder.🪄💫",
+                    "😲 ¡Plot twist para tu bolsillo! Hoy compras 1 y el segundo va por nuestra cuenta. Sí, leíste bien. ¡Etiqueta a tu persona favorita para que se entere! 🙌🎉"
+                ],
+                curiosidad: [
+                    "🤔 ¿Te imaginas lograr el doble de resultados invirtiendo la mitad? Hoy lanzamos una oferta exclusiva que está dando mucho de qué hablar. Descúbrela aquí 👇✨",
+                    "🔍 Hay un secreto detrás de nuestros clientes más felices... y hoy tiene un descuento irrepetible. ¿Quieres saber de qué se trata? Entra al link de nuestro perfil. 👀💡",
+                    "🤫 No podemos contar todos los detalles por aquí, pero si entras ahora mismo a nuestra web encontrarás una promoción oculta solo para los más rápidos. 🗝️🔥"
+                ],
+                empatia: [
+                    "💛 Sabemos que te esfuerzas todos los días por dar lo mejor de ti. Por eso creamos este descuento especial pensado exclusivamente para apoyarte. ¡Estamos contigo! 🤗✨",
+                    "🌿 A veces solo necesitas un pequeño impulso para renovar tu energía. Permítenos acompañarte con un 20% de ahorro en lo que tanto deseas. Te leemos en comentarios. 💬❤️",
+                    "🤝 Porque entendemos lo que realmente buscas: calidad, confianza y un precio justo. Aprovecha nuestra semana de beneficios especiales hecha a tu medida. 🌟"
+                ]
+            },
+            inspiracion: {
+                alegria: [
+                    "☀️ ¡Buenos días, mundo! Cada amanecer es una página en blanco lista para escribir tu mejor historia. ¡Sal ahí fuera y brilla con luz propia! ✨😄",
+                    "🚀 La energía positiva es contagiosa: sonríe, agradece lo que tienes hoy y prepárate para recibir cosas maravillosas. ¡Tú puedes con todo! 💪🌈",
+                    "🌻 No esperes el momento perfecto, toma este instante y hazlo extraordinario. ¡Comparte este post con alguien que necesite una dosis de alegría hoy! 💖🎉"
+                ],
+                urgencia: [
+                    "⏳ El mejor momento para empezar fue ayer; el segundo mejor momento es AHORA MISMO. Deja de postergar tus sueños y da el primer paso hoy. 🔥🚀",
+                    "⚡ Dentro de un año desearás haber empezado hoy. No dejes que el miedo te robe otro día más. ¡Actúa ahora y transforma tu realidad! 💥🎯",
+                    "🔥 El tiempo no espera a nadie, pero siempre premia a quienes se atreven. ¿Qué vas a hacer hoy para acercarte a tu meta? ¡Empieza ya! 🏃‍♀️💨"
+                ],
+                sorpresa: [
+                    "✨ A veces, el giro más inesperado de tu vida es exactamente lo que necesitabas para descubrir de lo que eres capaz. ¡Confía en el proceso! 🦋💫",
+                    "🤯 ¿Sabías que estás a una sola decisión de cambiar por completo tu rumbo? Atrévete a salir de tu zona de confort y sorpréndete a ti mismo. 🌟🚀",
+                    "🌠 Lo imposible solo tarda un poco más. Prepárate, porque lo mejor de tu historia apenas está comenzando y te va a dejar sin palabras. 🙌✨"
+                ],
+                curiosidad: [
+                    "🧠 ¿Qué pasaría si hoy cambiaras el '¿y si sale mal?' por un '¿y si sale mejor de lo que imaginé?'? Reflexiona sobre esto y cuéntanos qué harías primero. 🤔💭",
+                    "🔎 ¿Cuál es el hábito silencioso que diferencia a quienes cumplen sus metas de quienes solo las sueñan? La constancia en los días difíciles. 💡📈",
+                    "🌌 ¿Alguna vez te has detenido a pensar cuánto has crecido en los últimos 12 meses? Mira hacia atrás con orgullo y hacia adelante con ilusión. ✨👀"
+                ],
+                empatia: [
+                    "🫂 Está bien si hoy no puedes dar el 100%. Dar el 40% en un día difícil también cuenta como victoria. Respira profundo, lo estás haciendo increíble. 💙🌿",
+                    "🤍 No tienes que tener todo resuelto hoy. Paso a paso, a tu propio ritmo, sin compararte con nadie. Estamos aquí para recordarte lo valioso que eres. ✨🤝",
+                    "🌧️ Incluso después de la tormenta más larga, el sol siempre vuelve a salir. Si hoy estás pasando por un reto, guarda este mensaje como recordatorio. 🌈💛"
+                ]
+            },
+            testimonial: {
+                alegria: [
+                    "⭐⭐⭐⭐⭐ '¡Fue la mejor decisión que pude tomar! Desde el primer día noté el cambio y la atención fue espectacular.' — Laura M. 😍 ¡Nos encanta verlos felices! 🎉",
+                    "🥳 ¡Más de 1,500 clientes felices no pueden estar equivocados! Lee lo que dice Carlos sobre su experiencia con nosotros y únete a nuestra comunidad. 🙌✨",
+                    "💖 Nada nos llena más el corazón que recibir mensajes así: 'Superó todas mis expectativas, lo recomiendo con los ojos cerrados'. ¡Gracias por confiar! 🌟😊"
+                ],
+                urgencia: [
+                    "🔥 'Me arrepiento de no haberlo probado antes, me ahorró horas de trabajo desde la primera semana.' — Sofía R. ⚡ No sigas perdiendo tiempo, pruébalo hoy mismo. ⏳",
+                    "🚨 Cada día más personas están transformando sus resultados con nuestra solución. ¡No te quedes atrás y asegura tu lugar antes de que cerremos inscripciones! 🏃‍♂️💨",
+                    "⚡ 'En solo 7 días vi resultados que llevaba meses buscando.' — Andrés G. ¿Vas a esperar otro mes más o empiezas hoy? El momento es ahora. 🎯💥"
+                ],
+                sorpresa: [
+                    "😲 'Honestamente al principio dudaba, pero cuando lo probé me quedé sin palabras. ¡Es incluso mejor de lo que prometen!' — Mariana T. 🤯✨",
+                    "🤯 ¡De escéptico a fan número uno en 48 horas! Mira la increíble transformación de nuestro cliente Diego después de aplicar nuestro método. 📈🔥",
+                    "👀 ¿Resultados reales en tiempo récord? Mira el antes y después que nos compartió Valeria esta mañana. ¡Las imágenes hablan por sí solas! 🌟🙌"
+                ],
+                curiosidad: [
+                    "🤔 ¿Cómo logró Elena duplicar sus ventas sin aumentar su presupuesto? Ella misma nos cuenta el secreto en su reseña de esta semana. Desliza para leerlo 👉💡",
+                    "🔍 Muchos nos preguntan si realmente funciona para principiantes... La historia de Javier responde esa duda mejor que nosotros. ¡Descúbrela aquí! 👀📖",
+                    "💬 ¿Qué tienen en común nuestros clientes más exitosos? Todos empezaron exactamente donde tú estás hoy. Conoce sus historias reales en nuestro perfil. ✨🚀"
+                ],
+                empatia: [
+                    "🤝 'Por fin encontré una marca que realmente escucha lo que necesito y me acompaña en cada paso.' — Daniela P. Gracias por permitirnos ser parte de tu camino. 💛🌿",
+                    "💙 Sabemos que elegir dónde invertir tu confianza no es fácil. Por eso compartimos historias reales de personas como tú que decidieron dar el paso. ✨🤗",
+                    "🏡 Más que clientes, construimos una familia. Lee cómo nuestro equipo ayudó a Roberto a resolver su problema sin estrés ni complicaciones. 🌟❤️"
+                ]
+            },
+            cta: {
+                alegria: [
+                    "👇 ¡Queremos conocerte! Cuéntanos en los comentarios cuál es tu emoji favorito para describir tu día y comparte este post con tu mejor amigo. 😄🎉",
+                    "✨ ¿Listo para llevar tu proyecto al siguiente nivel? Haz clic en el enlace de nuestra bio y empieza hoy mismo con toda la actitud. ¡Te esperamos dentro! 🚀💖",
+                    "🎁 ¡Participa y gana! Dale ❤️ a esta publicación, guárdala para más tarde y etiqueta a 2 personas que amarían ver esto. ¡Mucha suerte! 🥳🌟"
+                ],
+                urgencia: [
+                    "🚨 ¡ÚLTIMO LLAMADO! Los cupos para nuestro taller gratuito se cierran en 2 horas. Haz clic en el link de la bio AHORA y asegura tu acceso. ⏳🔥",
+                    "⚡ ¡No dejes pasar esta oportunidad! Guarda este post antes de que se pierda en tu feed y descarga nuestra guía gratuita hoy mismo. 📥💨",
+                    "⏰ Quedan pocos lugares disponibles para recibir asesoría personalizada esta semana. Envíanos un DM con la palabra 'QUIERO' antes de que se agoten. 📩🚀"
+                ],
+                sorpresa: [
+                    "🎁 ¡Tenemos un regalo oculto para ti! Comenta la palabra 'MAGIA' aquí abajo y te enviaremos un acceso exclusivo directo a tu bandeja de entrada. 🪄✨",
+                    "🤯 ¿Quieres ver algo increíble? Toca dos veces la pantalla y mira el enlace de nuestro perfil para descubrir lo que acabamos de lanzar. 👀🔥",
+                    "😲 ¡No te vayas sin reclamar tu sorpresa! Completa nuestra encuesta de 30 segundos en las historias y desbloquea un beneficio especial al instante. 🎉💫"
+                ],
+                curiosidad: [
+                    "🤔 ¿Cuál de estas 3 opciones elegirías tú: A, B o C? Déjanos tu respuesta en los comentarios y descubre qué dice tu elección sobre tu estilo. 👇💡",
+                    "🔎 ¿Quieres descubrir el truco que usamos para ahorrar 5 horas a la semana? Visita el enlace de nuestra bio y descárgalo gratis hoy mismo. 👀📘",
+                    "💭 Tenemos una pregunta para ti... ¿Qué es lo primero que harías si tuvieras tiempo ilimitado? ¡Te leemos en los comentarios! 👇✨"
+                ],
+                empatia: [
+                    "💬 ¿Cómo te sientes hoy realmente? Este es un espacio seguro para compartir. Escríbenos en los comentarios o envíanos un mensaje, nos encantará leerte. 🤗💙",
+                    "📌 Guarda esta publicación para esos días en los que necesites un poco de apoyo o inspiración. Y si conoces a alguien que la necesite hoy, envíasela. 🌿❤️",
+                    "🤝 Estamos aquí para ayudarte a resolver tus dudas sin compromiso. Haz clic en el botón de mensaje y conversemos sobre cómo podemos apoyarte. ✨😊"
+                ]
+            }
+        };
+
+        /**
+         * Hashtags sugeridos según la red social y categoría
+         */
+        const hashtagBank = {
+            Instagram: ["#MarketingDigital", "#Emprendedores", "#ContenidoCreativo", "#Comunidad", "#InstaTips"],
+            TikTok: ["#ParaTi", "#FYP", "#TipsDeMarketing", "#Emprendimiento", "#Viral"],
+            Facebook: ["#NegociosOnline", "#Ofertas", "#InspiracionDiaria", "#ComunidadDigital"],
+            LinkedIn: ["#MarcaPersonal", "#EstrategiaDigital", "#CrecimientoProfesional", "#Innovacion", "#Liderazgo"]
+        };
+
+        // Referencias al DOM
+        const postTypeEl = document.getElementById('postType');
+        const emotionTypeEl = document.getElementById('emotionType');
+        const generateBtn = document.getElementById('generateBtn');
+        const regenerateSmallBtn = document.getElementById('regenerateSmallBtn');
+        const copyOutputEl = document.getElementById('copyOutput');
+        const copyOutputWrapper = document.getElementById('copyOutputWrapper');
+        const hashtagsContainer = document.getElementById('hashtagsContainer');
+        const badgesContainer = document.getElementById('badgesContainer');
+        const charCounter = document.getElementById('charCounter');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyBtnText = document.getElementById('copyBtnText');
+        const copyIcon = document.getElementById('copyIcon');
+        const includeHashtagsSwitch = document.getElementById('includeHashtags');
+        const networkChips = document.querySelectorAll('.social-chip');
+
+        let selectedNetwork = 'Instagram';
+        let lastGeneratedCopy = '';
+        let currentFullTextToCopy = '';
+
+        // Manejo de selección de Red Social
+        networkChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                networkChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                selectedNetwork = chip.getAttribute('data-net');
+                if (lastGeneratedCopy) {
+                    updateDisplayAndCounter();
+                }
+            });
+        });
+
+        // Actualizar al cambiar el switch de hashtags
+        includeHashtagsSwitch.addEventListener('change', () => {
+            if (lastGeneratedCopy) {
+                updateDisplayAndCounter();
+            }
+        });
+
+        /**
+         * Función para aplicar una animación de Animate.css limpiamente
+         */
+        function triggerAnimation(element, animationName) {
+            element.classList.remove('animate__animated', animationName, 'animate__fadeIn', 'animate__zoomIn', 'animate__bounceIn');
+            void element.offsetWidth; // Forzar reflow para reiniciar animación
+            element.classList.add('animate__animated', animationName);
+        }
+
+        /**
+         * Genera un copy aleatorio basado en las selecciones actuales
+         */
+        function generateCreativeCopy() {
+            const type = postTypeEl.value;
+            const emotion = emotionTypeEl.value;
+
+            const options = copyDatabase[type][emotion];
+            let randomCopy = options[Math.floor(Math.random() * options.length)];
+
+            // Evitar repetir exactamente el mismo copy consecutivo si hay más de 1 opción
+            if (options.length > 1 && randomCopy === lastGeneratedCopy) {
+                const filtered = options.filter(item => item !== lastGeneratedCopy);
+                randomCopy = filtered[Math.floor(Math.random() * filtered.length)];
+            }
+
+            lastGeneratedCopy = randomCopy;
+
+            // Actualizar etiquetas descriptivas
+            const typeText = postTypeEl.options[postTypeEl.selectedIndex].text;
+            const emotionText = emotionTypeEl.options[emotionTypeEl.selectedIndex].text;
+
+            badgesContainer.innerHTML = `
+                <span class="badge-category bg-danger-subtle text-danger me-1">${typeText}</span>
+                <span class="badge-category bg-info-subtle text-info-emphasis">${emotionText}</span>
+            `;
+
+            updateDisplayAndCounter();
+
+            // Animar la aparición del copy con Animate.css
+            triggerAnimation(copyOutputWrapper, 'animate__zoomIn');
+            triggerAnimation(generateBtn, 'animate__pulse');
+
+            // Resetear botón de copiar si estaba en estado "Copiado"
+            resetCopyButton();
+        }
+
+        /**
+         * Renderiza el texto, hashtags y contador de caracteres
+         */
+        function updateDisplayAndCounter() {
+            copyOutputEl.textContent = lastGeneratedCopy;
+            hashtagsContainer.innerHTML = '';
+
+            let hashtagsText = '';
+            if (includeHashtagsSwitch.checked) {
+                const tags = hashtagBank[selectedNetwork] || hashtagBank['Instagram'];
+                // Seleccionar 4 hashtags aleatorios de la red elegida
+                const shuffledTags = [...tags].sort(() => 0.5 - Math.random()).slice(0, 4);
+                hashtagsText = '\n\n' + shuffledTags.join(' ');
+
+                shuffledTags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'hashtag-pill animate__animated animate__fadeIn';
+                    span.textContent = tag;
+                    span.title = 'Clic para quitar este hashtag';
+                    span.addEventListener('click', () => {
+                        span.remove();
+                        recalculateFullText();
+                    });
+                    hashtagsContainer.appendChild(span);
+                });
+            }
+
+            recalculateFullText();
+        }
+
+        /**
+         * Recalcula el texto final incluyendo los hashtags visibles en pantalla
+         */
+        function recalculateFullText() {
+            const visibleTags = Array.from(hashtagsContainer.querySelectorAll('.hashtag-pill'))
+                                     .map(el => el.textContent);
+            
+            if (visibleTags.length > 0) {
+                currentFullTextToCopy = `${lastGeneratedCopy}\n\n${visibleTags.join(' ')}`;
+            } else {
+                currentFullTextToCopy = lastGeneratedCopy;
+            }
+
+            charCounter.textContent = `${currentFullTextToCopy.length} caracteres (${selectedNetwork})`;
+        }
+
+        /**
+         * Copia el texto al portapapeles de forma segura (compatible con iFrames)
+         */
+        function copyToClipboard() {
+            const textToCopy = currentFullTextToCopy || copyOutputEl.innerText;
+
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = textToCopy;
+            tempTextarea.style.position = 'fixed';
+            tempTextarea.style.left = '-9999px';
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+
+            try {
+                document.execCommand('copy');
+                showCopiedFeedback();
+            } catch (err) {
+                console.error('Error al copiar texto:', err);
+            } finally {
+                document.body.removeChild(tempTextarea);
+            }
+        }
+
+        function showCopiedFeedback() {
+            copyBtn.classList.add('copied');
+            copyIcon.className = 'bi bi-check2-circle';
+            copyBtnText.textContent = '¡Copiado!';
+            triggerAnimation(copyBtn, 'animate__bounceIn');
+
+            setTimeout(() => {
+                resetCopyButton();
+            }, 2200);
+        }
+
+        function resetCopyButton() {
+            copyBtn.classList.remove('copied');
+            copyIcon.className = 'bi bi-clipboard-check';
+            copyBtnText.textContent = 'Copiar Copy';
+        }
+
+        // Event Listeners
+        generateBtn.addEventListener('click', generateCreativeCopy);
+        regenerateSmallBtn.addEventListener('click', generateCreativeCopy);
+        copyBtn.addEventListener('click', copyToClipboard);
+
+        // Generar un primer copy automáticamente al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            generateCreativeCopy();
+        });
+    </script>
+</body>
+</html>
